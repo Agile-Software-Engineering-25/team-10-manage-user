@@ -21,7 +21,8 @@ public class SecurityConfig {
     // the role always has to be capatalized
     http
         .authorizeHttpRequests(authorize -> authorize
-            .requestMatchers("/demo").hasRole("DEFAULT-ROLES-SAU")
+            .requestMatchers("/demo").permitAll()
+            .requestMatchers("/token").permitAll()
             .requestMatchers("/admin/**").hasRole("admin")
             .anyRequest().authenticated())
         .oauth2ResourceServer(oauth2 -> oauth2
