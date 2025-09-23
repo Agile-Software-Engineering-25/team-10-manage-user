@@ -8,20 +8,21 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ase.userservice.components.GetToken;
-import com.ase.userservice.entities.NewUser;
 
 @RestController
+@RequestMapping("/user")
 public class CreateUserController {
-	@PostMapping("/user")
-	//TODO: Make le thing to create a user and make it right
-	public String createUser() throws URISyntaxException, IOException, InterruptedException {
+	@PostMapping(produces = "application/json")
+	public ResponseEntity<String> createUser(@RequestBody String newUserJson) throws URISyntaxException, IOException, InterruptedException {
 		HttpClient client = HttpClient.newHttpClient();
-		NewUser newUser = new NewUser("david", "david", "daivd", "dave@fave.com", true, true);
-		byte[] bytestream = newUser.getUserAsJsonBytes();
+		byte[] bytestream = newUserJson.getBytes();
 		String token = new GetToken().getToken();
 	
 		HttpRequest request = HttpRequest.newBuilder()
@@ -31,6 +32,6 @@ public class CreateUserController {
     		.setHeader("authorization", "bearer "+token)
     		.build();
 		HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-		return response.body();
+		return new ResponseEntity<>(newUserJson, org.springframework.http.HttpStatus.valueOf(response.statusCode()));
 	}
 }

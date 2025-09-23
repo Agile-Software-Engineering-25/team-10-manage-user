@@ -20,7 +20,7 @@ public class SecurityConfig {
 
     // the role always has to be capatalized
     http
-        .csrf(csrf -> csrf.disable()) // Disable CSRF for API endpoints
+        .csrf(csrf -> csrf.disable()) // Disable CSRF for API endpoints isnt needed for our purpose since we are not using cookies for auth
         .authorizeHttpRequests(authorize -> authorize
             .requestMatchers("/demo").permitAll()
             .requestMatchers("/token").permitAll()
