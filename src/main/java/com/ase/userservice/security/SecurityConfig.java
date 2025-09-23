@@ -20,9 +20,11 @@ public class SecurityConfig {
 
     // the role always has to be capatalized
     http
+        .csrf(csrf -> csrf.disable()) // Disable CSRF for API endpoints
         .authorizeHttpRequests(authorize -> authorize
             .requestMatchers("/demo").permitAll()
             .requestMatchers("/token").permitAll()
+            .requestMatchers("/user", "/user/**").permitAll()
             .requestMatchers("/admin/**").hasRole("admin")
             .anyRequest().authenticated())
         .oauth2ResourceServer(oauth2 -> oauth2
