@@ -29,7 +29,7 @@ mvn clean install
 ```
 ### Run the Application
 ```bash
-mvn spring-boot:run
+KC_USERNAME=<username> KC_PASSWORD=<pw> mvn spring-boot:run
 ```
 The application will start on http://localhost:8080
 
