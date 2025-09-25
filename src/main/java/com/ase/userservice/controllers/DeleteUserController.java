@@ -17,7 +17,7 @@ import com.ase.userservice.components.GetToken;
 @RestController
 @RequestMapping("/user/delete")
 public class DeleteUserController {
-    @DeleteMapping(params =  "/{id}", produces = "application/json")
+    @DeleteMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<?> deleteUser(@PathVariable String id) throws IOException, InterruptedException {
         String token = new GetToken().getToken();
         
