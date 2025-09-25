@@ -24,7 +24,7 @@ public class SecurityConfig {
         .authorizeHttpRequests(authorize -> authorize
             .requestMatchers("/demo").permitAll()
             .requestMatchers("/token").permitAll()
-            .requestMatchers("/user", "/user/**").permitAll()
+            .requestMatchers("/user", "/user/**").hasRole("MANAGE_USER_GROUP")
             .requestMatchers("/admin/**").hasRole("admin")
             .anyRequest().authenticated())
         .oauth2ResourceServer(oauth2 -> oauth2
