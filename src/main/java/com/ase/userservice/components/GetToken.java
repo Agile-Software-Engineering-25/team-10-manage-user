@@ -20,10 +20,14 @@ public class GetToken {
 	public String makehttpcall() throws IOException, InterruptedException {
 		HttpClient client = HttpClient.newHttpClient();
 
+		String username = System.getenv("KC_USERNAME");
+		String password = System.getenv("KC_PASSWORD");
+		String url = "client_id=admin-cli&grant_type=password&username=%s&password=%s";
+
 		//TODO: add credentials
 		HttpRequest request = HttpRequest.newBuilder()
     		.uri(URI.create("https://keycloak.sau-portal.de/realms/sau/protocol/openid-connect/token"))
-    		.POST(BodyPublishers.ofString("client_id=admin-cli&grant_type=password&username=<your-name>&password=<your-password>"))
+    		.POST(BodyPublishers.ofString(String.format(url, username, password)))
     		.setHeader("Content-Type", "application/x-www-form-urlencoded")
     		.build();
 
