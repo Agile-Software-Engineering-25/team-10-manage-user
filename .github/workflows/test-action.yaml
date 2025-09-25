@@ -1,0 +1,25 @@
+name: Test deploy-to-k8s
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  test-action:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v5
+
+      - name: Build and push image
+        uses: Agile-Software-Engineering-25/build-and-publish-image@v1
+        with:
+          image_name: "team-10-userApiService"
+          push: true
+          extra_tags: ${{ github.sha }}
+
+      - name: Deploy to k8s
+        uses: Agile-Software-Engineering-25/deploy-to-k8s@v1
+        with:
+          kubeconfig: ${{ secrets.KUBECONFIG }}
+          namespace: ${{ vars.K8S_NAMESPACE }}

@@ -1,0 +1,40 @@
+name: "Deploy to K8S"
+
+description: "Deploys the application to the SAU kubernetes cluster."
+
+inputs:
+  kubeconfig:
+    description: "Kubeconfig contents. Pass your repository or environment secret."
+    required: true
+  namespace:
+    description: "Kubernetes namespace to deploy to."
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v5
+
+    - name: Install kubectl
+      shell: bash
+      run: |
+        curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+        chmod +x kubectl
+        sudo mv kubectl /usr/local/bin/kubectl
+
+    - name: Write kubeconfig
+      shell: bash
+      env:
+        KUBECONFIG: ${{ github.workspace }}/kubeconfig
+      run: |
+        printf '%s' "${{ inputs.kubeconfig }}" > "$KUBECONFIG"
+
+    - name: Deploy manifests to ${{ inputs.namespace }}
+      shell: bash
+      env:
+        KUBECONFIG: ${{ github.workspace }}/kubeconfig
+      run: |
+        kubectl -n ${{ inputs.namespace }} apply -k k8s/
+        for d in $(kubectl -n ${{ inputs.namespace }} get deploy -l managed-by=kustomize -o name); do
+          kubectl -n ${{ inputs.namespace }} rollout status "$d" --timeout=3m
+        done
