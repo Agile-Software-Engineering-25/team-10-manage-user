@@ -4,7 +4,6 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 data/
-src/main/java/com/ase/userservice/components/GetToken.java
 
 ### STS ###
 .apt_generated
