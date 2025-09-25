@@ -30,7 +30,7 @@ public class CreateUserController {
 		String username = newUser.username;
 		response = UserManagment.getUserDatafromUsername(username, token);
 		// response = getUserDatafromUsername(username, token);
-		return new ResponseEntity<>(response.body(), org.springframework.http.HttpStatus.valueOf(response.statusCode()));
+		return new ResponseEntity<>(response.body()+"\n\"init-password\": "+ "\"" +newUser.credentials[0].value + "\"", org.springframework.http.HttpStatus.valueOf(response.statusCode()));
 	}
 	// public HttpResponse<String> getUserDatafromUsername(String username, String token) throws IOException, InterruptedException{
 	// 	HttpClient client = HttpClient.newHttpClient();
