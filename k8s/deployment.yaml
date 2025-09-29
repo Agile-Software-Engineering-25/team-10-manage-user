@@ -16,21 +16,14 @@ spec:
     spec:
       containers:
         - name: user-api-container
-          image: ghcr.io/agile-software-engineering-25/team-10-userapiservice:sha-2a057ff
+          image: ghcr.io/agile-software-engineering-25/team-10-userapiservice:latest
           command: ["java", "-jar", "app.jar"]
           ports:
             - containerPort: 8080
           resources:
             requests:
-              memory: "64Mi"
-              cpu: "50m"
+              memory: "1024Mi"
+              cpu: "1000m"
             limits:
-              memory: "128Mi"
-              cpu: "100m"
-          readinessProbe:
-            httpGet:
-              path: /
-              port: 8080
-            initialDelaySeconds: 10
-            periodSeconds: 5
-
+              memory: "1024Mi"
+              cpu: "1000m"

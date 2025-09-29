@@ -16,7 +16,7 @@ jobs:
         with:
           image_name: "team-10-userApiService"
           push: true
-          extra_tags: ${{ github.sha }}
+          extra_tags: latest
 
       - name: Deploy to k8s
         uses: Agile-Software-Engineering-25/deploy-to-k8s@v1
