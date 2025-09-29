@@ -1,25 +1,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: deploy-to-k8s-demo
+  name: userApiApp
   labels:
-    app: deploy-to-k8s-demo
+    app: userApiApp
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
-      app: deploy-to-k8s-demo
+      app: userApiApp
   template:
     metadata:
       labels:
-        app: deploy-to-k8s-demo
+        app: userApiApp
     spec:
       containers:
-        - name: deploy-to-k8s-demo
-          image: python:3.11-slim
-          command: ["python", "-m", "http.server", "8000"]
+        - name: userApiApp
+          image: ghcr.io/agile-software-engineering-25/team-10-userapiservice:sha-2a057ff
+          command: ["java", "-jar", "app.jar"]
           ports:
-            - containerPort: 8000
+            - containerPort: 8080
           resources:
             requests:
               memory: "64Mi"
@@ -30,12 +30,7 @@ spec:
           readinessProbe:
             httpGet:
               path: /
-              port: 8000
+              port: 8080
             initialDelaySeconds: 10
             periodSeconds: 5
-          livenessProbe:
-            httpGet:
-              path: /
-              port: 8000
-            initialDelaySeconds: 20
-            periodSeconds: 20
+
