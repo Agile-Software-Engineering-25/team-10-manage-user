@@ -27,6 +27,11 @@ runs:
       env:
         KUBECONFIG: ${{ github.workspace }}/kubeconfig
       run: |
+        if [ -z "${{ inputs.kubeconfig }}" ]; then
+          echo "E: kubeconfig not found"
+          exit 1
+        fi
+
         printf '%s' "${{ inputs.kubeconfig }}" > "$KUBECONFIG"
 
     - name: Deploy manifests to ${{ inputs.namespace }}
