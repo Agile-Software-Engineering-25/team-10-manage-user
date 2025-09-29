@@ -33,4 +33,15 @@ spec:
               port: 8080
             initialDelaySeconds: 12
             periodSeconds: 10
+          env:
+            - name: KC_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: api-wrapper
+                  key: KC_USERNAME
+            - name: KC_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: api-wrapper
+                  key: KC_PASSWORD
 
