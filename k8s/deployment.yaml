@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: userApiApp
+  name: user-api-app
   labels:
-    app: userApiApp
+    app: user-api-app
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: userApiApp
+      app: user-api-app
   template:
     metadata:
       labels:
-        app: userApiApp
+        app: user-api-app
     spec:
       containers:
-        - name: userApiApp
+        - name: user-api-container
           image: ghcr.io/agile-software-engineering-25/team-10-userapiservice:sha-2a057ff
           command: ["java", "-jar", "app.jar"]
           ports:

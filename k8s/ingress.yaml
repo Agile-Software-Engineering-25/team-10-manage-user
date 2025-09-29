@@ -1,9 +1,9 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: userApiIngress
+  name: user-api-ingress
   labels:
-    app: userApiService
+    app: user-api-service
   annotations:
     traefik.ingress.kubernetes.io/rewrite-target: /
 spec:
