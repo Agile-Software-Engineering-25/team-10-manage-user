@@ -89,16 +89,16 @@ public class UserResponseHelper {
     if (isIdSearch) {
       JsonNode userNode = objectMapper.readTree(responseBody);
       UserRepresentation user = extractSingleUser(userNode);
-      user.groups = getUserGroups(user.id, token); 
-      user.roles = getUserRoles(user.id, token); 
+      user.groups = getUserGroups(user.id, token);
+      user.roles = getUserRoles(user.id, token);
       users.add(user);
     } else {
       JsonNode usersArray = objectMapper.readTree(responseBody);
       if (usersArray.isArray()) {
         for (JsonNode userNode : usersArray) {
           UserRepresentation user = extractSingleUser(userNode);
-          user.groups = getUserGroups(user.id, token); 
-          user.roles = getUserRoles(user.id, token); 
+          user.groups = getUserGroups(user.id, token);
+          user.roles = getUserRoles(user.id, token);
           users.add(user);
         }
       }
@@ -120,33 +120,25 @@ public class UserResponseHelper {
 
     HttpClient client = HttpClient.newHttpClient();
 
-    try {
-      // Get user groups
-      HttpRequest request = HttpRequest.newBuilder()
-          .uri(URI.create("https://keycloak.sau-portal.de/admin/realms/sau/users/" + userId + "/groups"))
-          .GET()
-          .setHeader("authorization", "bearer " + token)
-          .build();
+    // Get user groups
+    HttpRequest request = HttpRequest.newBuilder()
+        .uri(URI.create("https://keycloak.sau-portal.de/admin/realms/sau/users/" + userId + "/groups"))
+        .GET()
+        .setHeader("authorization", "bearer " + token)
+        .build();
 
-      HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+    HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-      System.out.println("Groups API response for user " + userId + ": " + response.statusCode());
-
-      if (response.statusCode() == 200) {
-        JsonNode groupsArray = objectMapper.readTree(response.body());
-        if (groupsArray.isArray()) {
-          for (JsonNode group : groupsArray) {
-            String groupName = getStringValue(group, "name");
-            if (groupName != null) {
-              groups.add(groupName);
-            }
+    if (response.statusCode() == 200) {
+      JsonNode groupsArray = objectMapper.readTree(response.body());
+      if (groupsArray.isArray()) {
+        for (JsonNode group : groupsArray) {
+          String groupName = getStringValue(group, "name");
+          if (groupName != null) {
+            groups.add(groupName);
           }
         }
-      } else {
-        System.out.println("Failed to get groups for user " + userId + ": " + response.body());
       }
-    } catch (Exception e) {
-      System.out.println("Error getting groups for user " + userId + ": " + e.getMessage());
     }
 
     return groups;
@@ -165,32 +157,24 @@ public class UserResponseHelper {
 
     HttpClient client = HttpClient.newHttpClient();
 
-    try {
-      // Get realm roles for the user
-      HttpRequest request = HttpRequest.newBuilder()
-          .uri(URI.create("https://keycloak.sau-portal.de/admin/realms/sau/users/" + userId + "/role-mappings/realm"))
-          .GET()
-          .setHeader("authorization", "bearer " + token)
-          .build();
+    // Get realm roles for the user
+    HttpRequest request = HttpRequest.newBuilder()
+        .uri(URI.create("https://keycloak.sau-portal.de/admin/realms/sau/users/" + userId + "/role-mappings/realm"))
+        .GET()
+        .setHeader("authorization", "bearer " + token)
+        .build();
 
-      HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+    HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-      System.out.println("Roles API response for user " + userId + ": " + response.statusCode());
-
-      if (response.statusCode() == 200) {
-        JsonNode rolesArray = objectMapper.readTree(response.body());
-        if (rolesArray.isArray()) {
-          for (JsonNode role : rolesArray) {
-            String roleName = getStringValue(role, "name");
-            // Filter out default Keycloak roles
-            roles.add(roleName);
-          }
+    if (response.statusCode() == 200) {
+      JsonNode rolesArray = objectMapper.readTree(response.body());
+      if (rolesArray.isArray()) {
+        for (JsonNode role : rolesArray) {
+          String roleName = getStringValue(role, "name");
+          // Filter out default Keycloak roles
+          roles.add(roleName);
         }
-      } else {
-        System.out.println("Failed to get roles for user " + userId + ": " + response.body());
       }
-    } catch (Exception e) {
-      System.out.println("Error getting roles for user " + userId + ": " + e.getMessage());
     }
 
     return roles;
