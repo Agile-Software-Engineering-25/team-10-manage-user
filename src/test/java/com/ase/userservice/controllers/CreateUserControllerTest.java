@@ -26,7 +26,7 @@ import com.ase.userservice.components.GetToken;
 import com.ase.userservice.components.UserManagment;
 import com.ase.userservice.config.TestSecurityConfig;
 import com.ase.userservice.entities.CredentialRepresentation;
-import com.ase.userservice.entities.UserRepresentation;
+import com.ase.userservice.entities.NewUserRepresentation;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @WebMvcTest(CreateUserController.class)
@@ -46,8 +46,8 @@ class CreateUserControllerTest {
         objectMapper = new ObjectMapper();
     }
 
-    private UserRepresentation createTestUser() {
-        UserRepresentation user = new UserRepresentation();
+    private NewUserRepresentation createTestUser() {
+        NewUserRepresentation user = new NewUserRepresentation();
         user.username = "testuser";
         user.firstName = "Test";
         user.lastName = "User";
@@ -72,7 +72,7 @@ class CreateUserControllerTest {
     @Test
     void testCreateUser_Success() throws Exception {
         // Given
-        UserRepresentation testUser = createTestUser();
+        NewUserRepresentation testUser = createTestUser();
         String testToken = "test-token-123";
         String userDataResponse = "[{\"id\":\"user-id-123\",\"username\":\"testuser\"}]";
         
@@ -103,7 +103,7 @@ class CreateUserControllerTest {
     @Test
     void testCreateUser_CreationFailed() throws Exception {
         // Given
-        UserRepresentation testUser = createTestUser();
+        NewUserRepresentation testUser = createTestUser();
         String testToken = "test-token-123";
         String errorResponse = "User creation failed";
         
@@ -129,7 +129,7 @@ class CreateUserControllerTest {
     @Test
     void testCreateUser_TokenRetrievalFailed() throws Exception {
         // Given
-        UserRepresentation testUser = createTestUser();
+        NewUserRepresentation testUser = createTestUser();
         
         // Mock GetToken to throw exception
         when(getToken.getToken()).thenThrow(new RuntimeException("Token retrieval failed"));
@@ -144,7 +144,7 @@ class CreateUserControllerTest {
     @Test
     void testCreateUser_UserDataRetrievalFailed() throws Exception {
         // Given
-        UserRepresentation testUser = createTestUser();
+        NewUserRepresentation testUser = createTestUser();
         String testToken = "test-token-123";
         String errorResponse = "User not found";
         
