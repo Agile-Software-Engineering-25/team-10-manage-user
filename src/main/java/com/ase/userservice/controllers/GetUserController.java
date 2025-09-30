@@ -88,13 +88,13 @@ public class GetUserController {
 
       // get user by username
       if (username != null && !username.trim().isEmpty()) {
-        urlBuilder.append("?username=").append(username);
+        urlBuilder.append("?username=").append(username).append("&exact=true");
         hasParams = true;
       }
 
       // get user by email
       if (email != null && !email.trim().isEmpty()) {
-        urlBuilder.append(hasParams ? "&" : "?").append("email=").append(email);
+        urlBuilder.append(hasParams ? "&" : "?").append("email=").append(email).append("&exact=true");
       }
 
       request = HttpRequest.newBuilder()

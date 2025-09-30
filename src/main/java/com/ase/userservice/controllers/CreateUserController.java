@@ -13,13 +13,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.ase.userservice.components.GetToken;
 import com.ase.userservice.components.UserManagment;
-import com.ase.userservice.entities.NewUser;
+import com.ase.userservice.entities.NewUserRepresentation;
 
 @RestController
 @RequestMapping("/user")
 public class CreateUserController {
 	@PostMapping(consumes = "application/json", produces = "application/json")
-	public ResponseEntity<?> createUser(@RequestBody NewUser newUser) throws URISyntaxException, IOException, InterruptedException {
+	public ResponseEntity<?> createUser(@RequestBody NewUserRepresentation newUser) throws URISyntaxException, IOException, InterruptedException {
 		String token = new GetToken().getToken();
 
 		String newUserAsJson = new ObjectMapper().writeValueAsString(newUser);

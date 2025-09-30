@@ -1,6 +1,6 @@
 package com.ase.userservice.components;
 
-import com.ase.userservice.entities.UserInfo;
+import com.ase.userservice.entities.UserRepresentation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +22,7 @@ public class UserResponseHelper {
       return "[]";
     }
 
-    List<UserInfo> users = new ArrayList<>();
+    List<UserRepresentation> users = new ArrayList<>();
 
     if (isIdSearch) {
       JsonNode userNode = objectMapper.readTree(responseBody);
@@ -59,8 +59,8 @@ public class UserResponseHelper {
     return null;
   }
 
-  private UserInfo extractSingleUser(JsonNode userNode) {
-    UserInfo user = new UserInfo();
+  private UserRepresentation extractSingleUser(JsonNode userNode) {
+    UserRepresentation user = new UserRepresentation();
     user.id = getStringValue(userNode, "id");
     user.username = getStringValue(userNode, "username");
     user.firstName = getStringValue(userNode, "firstName");
