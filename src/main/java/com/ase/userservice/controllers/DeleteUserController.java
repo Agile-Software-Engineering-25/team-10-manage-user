@@ -15,12 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ase.userservice.components.GetToken;
 
 @RestController
-@RequestMapping("/user/delete")
+@RequestMapping("/userapi/user/delete")
 public class DeleteUserController {
     @DeleteMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<?> deleteUser(@PathVariable String id) throws IOException, InterruptedException {
         String token = new GetToken().getToken();
-        
+
         HttpClient client = HttpClient.newHttpClient();
 
         HttpRequest request = HttpRequest.newBuilder()

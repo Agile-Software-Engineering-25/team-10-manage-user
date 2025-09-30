@@ -8,8 +8,8 @@ import com.ase.userservice.components.GetToken;
 
 @RestController
 public class GetTokenController {
-	
-	@GetMapping("/token")
+
+	@GetMapping("/userapi/token")
 	public String getToken() throws IOException, InterruptedException {
 		String token = new GetToken().getToken();
 		return token;

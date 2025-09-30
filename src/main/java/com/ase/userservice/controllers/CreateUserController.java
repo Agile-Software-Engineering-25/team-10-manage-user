@@ -16,7 +16,7 @@ import com.ase.userservice.components.UserManagment;
 import com.ase.userservice.entities.NewUser;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/userapi/user")
 public class CreateUserController {
 	@PostMapping(consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> createUser(@RequestBody NewUser newUser) throws URISyntaxException, IOException, InterruptedException {

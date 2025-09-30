@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class RootController {
 
-	@GetMapping("/")
+	@GetMapping("/userapi")
 	public ResponseEntity<String> root() {
-		return ResponseEntity.ok("API Root: /api/v1/");
+		return ResponseEntity.ok("API Root: /userapi/");
 	}
 
 }
