@@ -2,6 +2,11 @@ package com.ase.userservice.components;
 
 import com.ase.userservice.entities.UserRepresentation;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Component;
@@ -40,6 +45,158 @@ public class UserResponseHelper {
   }
 
   /**
+   * Extracts user attributes including groups and returns as JSON string
+   */
+  public String extractUserAttributesWithGroups(String responseBody, boolean isIdSearch, String token)
+      throws JsonProcessingException, IOException, InterruptedException {
+    if (responseBody == null || responseBody.trim().isEmpty()) {
+      return "[]";
+    }
+
+    List<UserRepresentation> users = new ArrayList<>();
+
+    if (isIdSearch) {
+      JsonNode userNode = objectMapper.readTree(responseBody);
+      UserRepresentation user = extractSingleUser(userNode);
+      user.groups = getUserGroups(user.id, token); // Rollen hinzufügen
+      users.add(user);
+    } else {
+      JsonNode usersArray = objectMapper.readTree(responseBody);
+      if (usersArray.isArray()) {
+        for (JsonNode userNode : usersArray) {
+          UserRepresentation user = extractSingleUser(userNode);
+          user.groups = getUserGroups(user.id, token); // Rollen hinzufügen
+          users.add(user);
+        }
+      }
+    }
+
+    return objectMapper.writeValueAsString(users);
+  }
+
+  /**
+   * Extracts user attributes including both groups and roles
+   */
+  public String extractUserAttributesWithGroupsAndRoles(String responseBody, boolean isIdSearch, String token)
+      throws JsonProcessingException, IOException, InterruptedException {
+    if (responseBody == null || responseBody.trim().isEmpty()) {
+      return "[]";
+    }
+
+    List<UserRepresentation> users = new ArrayList<>();
+
+    // different kc api response format when using id vs. query parameter
+    if (isIdSearch) {
+      JsonNode userNode = objectMapper.readTree(responseBody);
+      UserRepresentation user = extractSingleUser(userNode);
+      user.groups = getUserGroups(user.id, token); 
+      user.roles = getUserRoles(user.id, token); 
+      users.add(user);
+    } else {
+      JsonNode usersArray = objectMapper.readTree(responseBody);
+      if (usersArray.isArray()) {
+        for (JsonNode userNode : usersArray) {
+          UserRepresentation user = extractSingleUser(userNode);
+          user.groups = getUserGroups(user.id, token); 
+          user.roles = getUserRoles(user.id, token); 
+          users.add(user);
+        }
+      }
+    }
+
+    return objectMapper.writeValueAsString(users);
+  }
+
+  /**
+   * Gets groups for a specific user
+   */
+  private ArrayList<String> getUserGroups(String userId, String token)
+      throws IOException, InterruptedException, JsonProcessingException {
+    ArrayList<String> groups = new ArrayList<>();
+
+    if (userId == null || userId.trim().isEmpty()) {
+      return groups;
+    }
+
+    HttpClient client = HttpClient.newHttpClient();
+
+    try {
+      // Get user groups
+      HttpRequest request = HttpRequest.newBuilder()
+          .uri(URI.create("https://keycloak.sau-portal.de/admin/realms/sau/users/" + userId + "/groups"))
+          .GET()
+          .setHeader("authorization", "bearer " + token)
+          .build();
+
+      HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+      System.out.println("Groups API response for user " + userId + ": " + response.statusCode());
+
+      if (response.statusCode() == 200) {
+        JsonNode groupsArray = objectMapper.readTree(response.body());
+        if (groupsArray.isArray()) {
+          for (JsonNode group : groupsArray) {
+            String groupName = getStringValue(group, "name");
+            if (groupName != null) {
+              groups.add(groupName);
+            }
+          }
+        }
+      } else {
+        System.out.println("Failed to get groups for user " + userId + ": " + response.body());
+      }
+    } catch (Exception e) {
+      System.out.println("Error getting groups for user " + userId + ": " + e.getMessage());
+    }
+
+    return groups;
+  }
+
+  /**
+   * Gets roles for a specific user
+   */
+  private ArrayList<String> getUserRoles(String userId, String token)
+      throws IOException, InterruptedException, JsonProcessingException {
+    ArrayList<String> roles = new ArrayList<>();
+
+    if (userId == null || userId.trim().isEmpty()) {
+      return roles;
+    }
+
+    HttpClient client = HttpClient.newHttpClient();
+
+    try {
+      // Get realm roles for the user
+      HttpRequest request = HttpRequest.newBuilder()
+          .uri(URI.create("https://keycloak.sau-portal.de/admin/realms/sau/users/" + userId + "/role-mappings/realm"))
+          .GET()
+          .setHeader("authorization", "bearer " + token)
+          .build();
+
+      HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+      System.out.println("Roles API response for user " + userId + ": " + response.statusCode());
+
+      if (response.statusCode() == 200) {
+        JsonNode rolesArray = objectMapper.readTree(response.body());
+        if (rolesArray.isArray()) {
+          for (JsonNode role : rolesArray) {
+            String roleName = getStringValue(role, "name");
+            // Filter out default Keycloak roles
+            roles.add(roleName);
+          }
+        }
+      } else {
+        System.out.println("Failed to get roles for user " + userId + ": " + response.body());
+      }
+    } catch (Exception e) {
+      System.out.println("Error getting roles for user " + userId + ": " + e.getMessage());
+    }
+
+    return roles;
+  }
+
+  /**
    * Finds group ID by group name from search response
    */
   public String findGroupIdFromResponse(String groupName, String responseBody) throws JsonProcessingException {
@@ -66,6 +223,7 @@ public class UserResponseHelper {
     user.firstName = getStringValue(userNode, "firstName");
     user.lastName = getStringValue(userNode, "lastName");
     user.email = getStringValue(userNode, "email");
+    user.groups = new ArrayList<>(); // Initialize empty groups list
     return user;
   }
 
@@ -73,5 +231,4 @@ public class UserResponseHelper {
     JsonNode fieldNode = node.get(fieldName);
     return fieldNode != null ? fieldNode.asText() : null;
   }
-
 }

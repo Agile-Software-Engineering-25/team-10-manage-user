@@ -18,7 +18,7 @@ import com.ase.userservice.components.UserResponseHelper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 @RestController
-@RequestMapping("/user/get")
+@RequestMapping("/user")
 public class GetUserController {
 
   private final UserResponseHelper responseHelper;
@@ -106,8 +106,9 @@ public class GetUserController {
 
     HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-    // Use helper for formatting
-    String extractedResponse = responseHelper.extractUserAttributes(response.body(), isIdSearch);
+    // Always extract with groups and roles (no parameter needed)
+    String extractedResponse = responseHelper.extractUserAttributesWithGroupsAndRoles(response.body(), isIdSearch,
+        token);
 
     return ResponseEntity.status(response.statusCode()).body(extractedResponse);
   }

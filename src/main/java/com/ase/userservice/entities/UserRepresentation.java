@@ -12,5 +12,6 @@ public class UserRepresentation{
 	public String lastName;
 	public String email;
 	public ArrayList<String> groups; 
+  public ArrayList<String> roles;
 	public boolean enabled = true;
 }
