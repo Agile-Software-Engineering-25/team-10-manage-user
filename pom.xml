@@ -10,9 +10,9 @@
     </parent>
     <groupId>com.ase</groupId>
     <artifactId>userservice</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>userService</name>
-    <description>userService</description>
+    <version>0.1.0</version>
+    <name>userApiService</name>
+    <description>userApiService</description>
     <url/>
     <licenses>
         <license/>
@@ -73,4 +73,25 @@
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
     </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.4.2</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                            <mainClass>com.ase.userservice.Application</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 </project>

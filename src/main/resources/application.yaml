@@ -22,5 +22,7 @@ spring:
           jwk-set-uri: https://keycloak.sau-portal.de/realms/sau/protocol/openid-connect/certs
 server:
   port: 8080
+  servlet:
+    context-path: /userapi/v1
   error:
     include-message: always
