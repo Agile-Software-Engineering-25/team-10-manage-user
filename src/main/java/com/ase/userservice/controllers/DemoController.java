@@ -8,7 +8,7 @@ public class DemoController {
 
 	// to manage access, add route rules in security/SecurityConfig.java like in the
 	// examples
-	@GetMapping("/userapi/demo")
+	@GetMapping("/demo")
 	public String demo() {
 		return "Hello from DemoController!";
 	}
