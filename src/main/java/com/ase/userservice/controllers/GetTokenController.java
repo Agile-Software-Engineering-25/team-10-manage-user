@@ -15,4 +15,10 @@ public class GetTokenController {
 		return token;
 	}
 
+	@GetMapping("/clienttoken")
+	public String getClientToken() throws IOException, InterruptedException {
+		String token = new GetToken().getClientToken();
+		return token;
+	}
+
 }

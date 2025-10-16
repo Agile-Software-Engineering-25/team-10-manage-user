@@ -1,7 +1,10 @@
 package com.ase.userservice.controllers;
 
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 import org.springframework.http.ResponseEntity;
@@ -29,30 +32,30 @@ public class CreateUserController {
 			return new ResponseEntity<>(response.body(), org.springframework.http.HttpStatus.valueOf(response.statusCode()));
 		String username = newUser.username;
 		response = UserManagment.getUserDatafromUsername(username, token);
+
+		if (sendmail(newUser.email, username, newUser.credentials[0].value) == 204) {
+			System.out.println("Email sent successfully to " + newUser.email);
+		} else {
+			System.out.println("Failed to send email to " + newUser.email);
+		}
+
 		// response = getUserDatafromUsername(username, token);
 		return new ResponseEntity<>(response.body()+"\n\"init-password\": "+ "\"" +newUser.credentials[0].value + "\"", org.springframework.http.HttpStatus.valueOf(response.statusCode()));
 	}
-	// public HttpResponse<String> getUserDatafromUsername(String username, String token) throws IOException, InterruptedException{
-	// 	HttpClient client = HttpClient.newHttpClient();
-	// 	HttpRequest request = HttpRequest.newBuilder()
-    // 		.uri(URI.create("https://keycloak.sau-portal.de/admin/realms/sau/users/?username=" + username))
-    // 		.GET()
-    // 		.setHeader("authorization", "bearer "+token)
-    // 		.build();
-	// 	HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-	// 	return response;
-	// }
 
-	// public  HttpResponse<String> createUserfromJson(String newUserJson, String token) throws IOException, InterruptedException{
-	// 	HttpClient client = HttpClient.newHttpClient();
-	// 	byte[] bytestream = newUserJson.getBytes();
-	// 	HttpRequest request = HttpRequest.newBuilder()
-    // 		.uri(URI.create("https://keycloak.sau-portal.de/admin/realms/sau/users"))
-    // 		.POST(BodyPublishers.ofByteArray(bytestream))
-    // 		.setHeader("Content-Type", "application/json")
-    // 		.setHeader("authorization", "bearer "+token)
-    // 		.build();
-	// 	HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-	// 	return response;
-	// }
+	public int sendmail(String mail, String name, String password) throws IOException, InterruptedException{
+		HttpClient client = HttpClient.newHttpClient();
+		
+		String token = new GetToken().getClientToken();
+
+		HttpRequest request = HttpRequest.newBuilder()
+    		.uri(URI.create("https://sau-portal.de/notification-service/api/v1/emails"))
+    		.header("Authorization", "Bearer " + token)
+    		.header("Content-Type", "application/json")
+    		.method("POST", HttpRequest.BodyPublishers.ofString("{   \n\t\"to\": [     \n\t\t\"" + mail + "\"   ],\n\t\"subject\": \"Ihre Anmeldedaten\",   \n\t\"template\": \"WELCOME\",   \n\t\"variables\": {     \n\t\t\"name\": \"" + name + "\",     \n\t\t\"code\": \"" + password + "\"   \n\t} \n}"))
+    		.build();
+		HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+		return response.statusCode();
+	}
+
 }

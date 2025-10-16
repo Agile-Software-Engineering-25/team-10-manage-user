@@ -14,6 +14,5 @@ public class NewUserRepresentation{
   public String email;
   public ArrayList<String> groups;
 	public ArrayList<String> requiredActions = new ArrayList<String>(Arrays.asList("UPDATE_PASSWORD"));
-  //public ArrayList<String> requiredActions = new ArrayList<String>(Arrays.asList("VERIFY_EMAIL", "UPDATE_PASSWORD")); //enable when email verification is wanted
 	public CredentialRepresentation[] credentials = {new CredentialRepresentation()};  
 }
