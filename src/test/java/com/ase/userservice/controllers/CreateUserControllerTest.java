@@ -53,7 +53,6 @@ class CreateUserControllerTest {
         user.lastName = "User";
         user.email = "test@example.com";
         user.groups = new ArrayList<>(Arrays.asList("testgroup"));
-        user.enabled = true;
         user.requiredActions = new ArrayList<>(Arrays.asList("UPDATE_PASSWORD"));
         user.credentials = new CredentialRepresentation[]{new CredentialRepresentation()};
         // Set a fixed password for testing
