@@ -22,7 +22,7 @@ public class DeleteUserController {
     private static final Logger log = LoggerFactory.getLogger(DeleteUserController.class);
 
     private static final String bitfrostServiceName = "User-Service", bitfrostTopicName = "user:deletion";
-    private String bitfrostProjectSecret = System.getenv("BITFROST_PROJECT_SECRET");
+    private final String bitfrostProjectSecret = System.getenv("BITFROST_PROJECT_SECRET");
 
     @DeleteMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<?> deleteUser(@PathVariable String id) throws IOException, InterruptedException {
