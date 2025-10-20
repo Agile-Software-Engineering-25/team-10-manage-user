@@ -12,9 +12,13 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.net.http.HttpResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GetToken {
 	
+	private static final Logger log = LoggerFactory.getLogger(GetToken.class);
+
     private String token;
 
 	public String makehttpcall() throws IOException, InterruptedException {
@@ -34,7 +38,16 @@ public class GetToken {
     		.build();
 
 		HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-		
+
+		int status = response.statusCode();
+		if (status == 200) {
+			log.info("Keycloak token endpoint responded with status=200 (OK)");
+		} else {
+			String body = response.body();
+			String safeBody = body == null ? null : (body.length() > 1000 ? body.substring(0, 1000) + "..." : body);
+			log.warn("Keycloak token endpoint error: status={}, body={}", status, safeBody);
+		}
+
 		return response.body();
 	}
 
