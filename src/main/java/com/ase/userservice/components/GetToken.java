@@ -24,10 +24,8 @@ public class GetToken {
 	public String makehttpcall() throws IOException, InterruptedException {
 		HttpClient client = HttpClient.newHttpClient();
 
-		//String username = System.getenv("KC_USERNAME");
-		String client_id = "team-10";
-		//String password = System.getenv("KC_PASSWORD");
-		String client_secret = "wpJ15X9VuW8ACTzWXzXiYhBIc4CGsIjZ";
+		String client_id = System.getenv("KC_CLIENT_ID");
+		String client_secret = System.getenv("KC_CLIENT_SECRET");
 		String url = "client_id=%s&grant_type=client_credentials&client_secret=%s";
 
 		//TODO: add credentials
