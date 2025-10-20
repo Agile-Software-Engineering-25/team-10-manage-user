@@ -31,6 +31,6 @@ public class CreateUserController {
 		response = UserManagment.getUserDatafromUsername(username, token);
 		
 
-		return new ResponseEntity<>(response.body()+"\n\"init-password\": "+ "\"" +newUser.credentials[0].value + "\"", org.springframework.http.HttpStatus.valueOf(response.statusCode()));
+		return new ResponseEntity<>(response.body(), org.springframework.http.HttpStatus.valueOf(response.statusCode()));
 	}
 }
