@@ -26,7 +26,7 @@ public class DeleteUserController {
         HttpRequest request = HttpRequest.newBuilder()
             .uri(URI.create("https://keycloak.sau-portal.de/admin/realms/sau/users/" + id))
             .DELETE()
-            .setHeader("Authorization", "bearer " + token)
+            .setHeader("Authorization", "Bearer " + token)
              .build();
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
