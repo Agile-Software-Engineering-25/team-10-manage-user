@@ -49,7 +49,7 @@ public class DeleteUserController {
 
             // Notify message broker
             HttpRequest bitfrostRequest = HttpRequest.newBuilder()
-                .uri(URI.create("https://bitfrost.sau-portal.de/api/v1/messages/publish/"+bitfrostServiceName+"/"+bitfrostTopicName))
+                .uri(URI.create(String.format("https://bitfrost.sau-portal.de/api/v1/messages/publish/%s/%s", bitfrostServiceName, bitfrostTopicName)))
                 .header("authorization", "Executor "+bitfrostServiceName+":"+bitfrostProjectSecret)
                 .header("content-type", "application/json")
                 .method("POST", HttpRequest.BodyPublishers.ofString("{\n  \"user-id\": \""+ id +"\"\n}"))
