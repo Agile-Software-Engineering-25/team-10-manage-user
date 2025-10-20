@@ -48,7 +48,6 @@ class CreateUserControllerTest {
 
     private NewUserRepresentation createTestUser() {
         NewUserRepresentation user = new NewUserRepresentation();
-        user.username = "testuser";
         user.firstName = "Test";
         user.lastName = "User";
         user.email = "test@example.com";
