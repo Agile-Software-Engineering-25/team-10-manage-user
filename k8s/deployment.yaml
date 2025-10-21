@@ -36,12 +36,12 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: api-wrapper
-                  key: KC_USERNAME
+                  key: KC_CLIENT_ID
             - name: KC_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: api-wrapper
-                  key: KC_PASSWORD
+                  key: KC_CLIENT_SECRET
             - name: BITFROST_PROJECT_SECRET
               valueFrom:
                   secretKeyRef:
