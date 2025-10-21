@@ -20,39 +20,17 @@ import com.ase.userservice.entities.NewUserRepresentation;
 public class CreateUserController {
 	@PostMapping(consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> createUser(@RequestBody NewUserRepresentation newUser) throws URISyntaxException, IOException, InterruptedException {
+		
 		String token = new GetToken().getToken();
 
 		String newUserAsJson = new ObjectMapper().writeValueAsString(newUser);
 		HttpResponse<String> response = UserManagment.createUserfromJson(newUserAsJson, token);
-		// HttpResponse<String> response = createUserfromJson(newUserAsJson, token);
 		if (response.statusCode() != 201)
 			return new ResponseEntity<>(response.body(), org.springframework.http.HttpStatus.valueOf(response.statusCode()));
-		String username = newUser.username;
+		String username = newUser.email;
 		response = UserManagment.getUserDatafromUsername(username, token);
-		// response = getUserDatafromUsername(username, token);
-		return new ResponseEntity<>(response.body()+"\n\"init-password\": "+ "\"" +newUser.credentials[0].value + "\"", org.springframework.http.HttpStatus.valueOf(response.statusCode()));
-	}
-	// public HttpResponse<String> getUserDatafromUsername(String username, String token) throws IOException, InterruptedException{
-	// 	HttpClient client = HttpClient.newHttpClient();
-	// 	HttpRequest request = HttpRequest.newBuilder()
-    // 		.uri(URI.create("https://keycloak.sau-portal.de/admin/realms/sau/users/?username=" + username))
-    // 		.GET()
-    // 		.setHeader("authorization", "bearer "+token)
-    // 		.build();
-	// 	HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-	// 	return response;
-	// }
+		
 
-	// public  HttpResponse<String> createUserfromJson(String newUserJson, String token) throws IOException, InterruptedException{
-	// 	HttpClient client = HttpClient.newHttpClient();
-	// 	byte[] bytestream = newUserJson.getBytes();
-	// 	HttpRequest request = HttpRequest.newBuilder()
-    // 		.uri(URI.create("https://keycloak.sau-portal.de/admin/realms/sau/users"))
-    // 		.POST(BodyPublishers.ofByteArray(bytestream))
-    // 		.setHeader("Content-Type", "application/json")
-    // 		.setHeader("authorization", "bearer "+token)
-    // 		.build();
-	// 	HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-	// 	return response;
-	// }
+		return new ResponseEntity<>(response.body(), org.springframework.http.HttpStatus.valueOf(response.statusCode()));
+	}
 }
