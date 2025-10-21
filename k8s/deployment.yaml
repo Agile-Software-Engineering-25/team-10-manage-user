@@ -42,4 +42,9 @@ spec:
                 secretKeyRef:
                   name: api-wrapper
                   key: KC_PASSWORD
+            - name: BITFROST_PROJECT_SECRET
+              valueFrom:
+                  secretKeyRef:
+                    name: api-wrapper
+                    key: BITFROST_PROJECT_SECRET
 
