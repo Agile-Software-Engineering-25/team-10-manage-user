@@ -32,12 +32,12 @@ spec:
           #   initialDelaySeconds: 12
           #   periodSeconds: 10
           env:
-            - name: KC_USERNAME
+            - name: KC_CLIENT_ID
               valueFrom:
                 secretKeyRef:
                   name: api-wrapper
                   key: KC_CLIENT_ID
-            - name: KC_PASSWORD
+            - name: KC_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
                   name: api-wrapper
