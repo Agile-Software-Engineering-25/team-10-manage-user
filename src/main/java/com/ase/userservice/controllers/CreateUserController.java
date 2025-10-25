@@ -12,6 +12,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,6 +28,8 @@ import com.ase.userservice.entities.NewUserRepresentation;
 @RestController
 @RequestMapping("/user")
 public class CreateUserController {
+	private static final Logger log = LoggerFactory.getLogger(DeleteUserController.class);
+
 	@PostMapping(consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> createUser(@RequestBody NewUserRepresentation newUser) throws URISyntaxException, IOException, InterruptedException {
 		
@@ -40,9 +44,9 @@ public class CreateUserController {
 
 		int responseCode = sendmail(newUser.email, username, newUser.credentials[0].value);
 		if (responseCode == 204) {
-			System.out.println("Email sent successfully to " + newUser.email);
+			log.debug("Email sent successfully to %s", newUser.email);
 		} else {
-			System.out.printf("Failed to send email to %s with %d\n", newUser.email, responseCode);
+			log.error("Failed to send email to %s with %d\n", newUser.email, responseCode);
 		}
 
 		return new ResponseEntity<>(response.body(), org.springframework.http.HttpStatus.valueOf(response.statusCode()));
