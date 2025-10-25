@@ -79,23 +79,4 @@ public class GetToken {
 		return parseJson(makeclienthttpcall());
 	}
 
-	public String makeclienthttpcall() throws IOException, InterruptedException {
-		HttpClient client = HttpClient.newHttpClient();
-		String password = System.getenv("KC_CLIENT_SECRET");
-		String url = "client_id=team-10&grant_type=client_credentials&client_secret=%s";
-
-		HttpRequest request = HttpRequest.newBuilder()
-    		.uri(URI.create("https://keycloak.sau-portal.de/realms/sau/protocol/openid-connect/token"))
-    		.header("Content-Type", "application/x-www-form-urlencoded")
-    		.method("POST", HttpRequest.BodyPublishers.ofString(String.format(url, password)))
-    		.build();
-		HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-		
-		return response.body();
-	}
-
-	public String getClientToken() throws JsonMappingException, JsonProcessingException, IOException, InterruptedException {
-		return parseJson(makeclienthttpcall());
-	}
-
 }
