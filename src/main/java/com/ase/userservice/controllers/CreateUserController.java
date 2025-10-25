@@ -6,6 +6,11 @@ import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -45,15 +50,38 @@ public class CreateUserController {
 
 	public int sendmail(String mail, String name, String password) throws IOException, InterruptedException{
 		HttpClient client = HttpClient.newHttpClient();
-		
+
 		String token = new GetToken().getToken();
 
+		ObjectMapper mapper = new ObjectMapper();
+		Map<String, Object> payload = new HashMap<>();
+		payload.put("to", List.of(mail));
+		payload.put("subject", "Initiale Anmeldedaten");
+		payload.put("template", "GENERIC");
+
+		Map<String, Object> variables = new LinkedHashMap<>();
+		variables.put("header", "Zugang zu Ihrem Konto");
+		variables.put("name", name);
+		List<String> body = new ArrayList<>();
+		body.add("Ihre Anmeldedaten stehen bereit!");
+		body.add("E-Mail: " + mail);
+		body.add("Passwort: " + password);
+		variables.put("body", body);
+		variables.put("highlightLine", "Bitte melden Sie sich mit Ihren Zugangsdaten im Portal an und folgen Sie den dortigen Anweisungen.");
+		variables.put("ctaUrl", "https://sau-portal.de/");
+		variables.put("ctaLabel", "Zum Portal");
+		variables.put("note", "Automatisch generierte E-Mail. Bitte nicht antworten.");
+
+		payload.put("variables", variables);
+
+		String jsonBody = mapper.writeValueAsString(payload);
+
 		HttpRequest request = HttpRequest.newBuilder()
-    		.uri(URI.create("https://sau-portal.de/notification-service/api/v1/emails"))
-    		.header("Authorization", "Bearer " + token)
-    		.header("Content-Type", "application/json")
-    		.method("POST", HttpRequest.BodyPublishers.ofString(String.format("{to\": [\n    \"%s\"\n  ],\n  \"subject\": \"Initiale Anmeldedaten\",\n  \"template\": \"GENERIC\",\n  \"variables\": {\n    \"header\": \"Zugang zu Ihrem Konto\",\n    \"name\": \"%s\",\n    \"body\": [\n      \"Ihre Anmeldedaten stehen bereit!\",\n      \"E-Mail: %s\",\n      \"Passwort: %s\"\n    ],\n    \"highlightLine\": \"Bitte melden Sie sich mit Ihren Zugangsdaten im Portal an und folgen Sie den dortigen Anweisungen.\",\n    \"ctaUrl\": \"https://sau-portal.de/\",\n    \"ctaLabel\": \"Zum Portal\",\n    \"note\": \"Automatisch generierte E-Mail. Bitte nicht antworten.\"\n  }\n}", mail, name, mail, password)))
-    		.build();
+	    	.uri(URI.create("https://sau-portal.de/notification-service/api/v1/emails"))
+	    	.header("Authorization", "Bearer " + token)
+	    	.header("Content-Type", "application/json")
+	    	.POST(HttpRequest.BodyPublishers.ofString(jsonBody))
+	    	.build();
 		HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 		return response.statusCode();
 	}
