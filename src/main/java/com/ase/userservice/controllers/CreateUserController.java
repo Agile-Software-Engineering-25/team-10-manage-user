@@ -45,7 +45,7 @@ public class CreateUserController {
 	public int sendmail(String mail, String name, String password) throws IOException, InterruptedException{
 		HttpClient client = HttpClient.newHttpClient();
 		
-		String token = new GetToken().getClientToken();
+		String token = new GetToken().getToken();
 
 		HttpRequest request = HttpRequest.newBuilder()
     		.uri(URI.create("https://sau-portal.de/notification-service/api/v1/emails"))
