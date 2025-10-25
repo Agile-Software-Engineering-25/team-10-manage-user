@@ -23,14 +23,14 @@ import com.ase.userservice.entities.NewUserRepresentation;
 public class CreateUserController {
 	@PostMapping(consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> createUser(@RequestBody NewUserRepresentation newUser) throws URISyntaxException, IOException, InterruptedException {
+		
 		String token = new GetToken().getToken();
 
 		String newUserAsJson = new ObjectMapper().writeValueAsString(newUser);
 		HttpResponse<String> response = UserManagment.createUserfromJson(newUserAsJson, token);
-		// HttpResponse<String> response = createUserfromJson(newUserAsJson, token);
 		if (response.statusCode() != 201)
 			return new ResponseEntity<>(response.body(), org.springframework.http.HttpStatus.valueOf(response.statusCode()));
-		String username = newUser.username;
+		String username = newUser.email;
 		response = UserManagment.getUserDatafromUsername(username, token);
 
 		if (sendmail(newUser.email, username, newUser.credentials[0].value) == 204) {
@@ -39,8 +39,7 @@ public class CreateUserController {
 			System.out.println("Failed to send email to " + newUser.email);
 		}
 
-		// response = getUserDatafromUsername(username, token);
-		return new ResponseEntity<>(response.body()+"\n\"init-password\": "+ "\"" +newUser.credentials[0].value + "\"", org.springframework.http.HttpStatus.valueOf(response.statusCode()));
+		return new ResponseEntity<>(response.body(), org.springframework.http.HttpStatus.valueOf(response.statusCode()));
 	}
 
 	public int sendmail(String mail, String name, String password) throws IOException, InterruptedException{
