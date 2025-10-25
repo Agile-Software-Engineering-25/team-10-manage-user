@@ -52,7 +52,7 @@ public class CreateUserController {
     		.uri(URI.create("https://sau-portal.de/notification-service/api/v1/emails"))
     		.header("Authorization", "Bearer " + token)
     		.header("Content-Type", "application/json")
-    		.method("POST", HttpRequest.BodyPublishers.ofString("{   \n\t\"to\": [     \n\t\t\"" + mail + "\"   ],\n\t\"subject\": \"Ihre Anmeldedaten\",   \n\t\"template\": \"WELCOME\",   \n\t\"variables\": {     \n\t\t\"name\": \"" + name + "\",     \n\t\t\"code\": \"" + password + "\"   \n\t} \n}"))
+    		.method("POST", HttpRequest.BodyPublishers.ofString(String.format("{to\": [\n    \"%s\"\n  ],\n  \"subject\": \"Initiale Anmeldedaten\",\n  \"template\": \"GENERIC\",\n  \"variables\": {\n    \"header\": \"Zugang zu Ihrem Konto\",\n    \"name\": \"%s\",\n    \"body\": [\n      \"Ihre Anmeldedaten stehen bereit!\",\n      \"E-Mail: %s\",\n      \"Passwort: %s\"\n    ],\n    \"highlightLine\": \"Bitte melden Sie sich mit Ihren Zugangsdaten im Portal an und folgen Sie den dortigen Anweisungen.\",\n    \"ctaUrl\": \"https://sau-portal.de/\",\n    \"ctaLabel\": \"Zum Portal\",\n    \"note\": \"Automatisch generierte E-Mail. Bitte nicht antworten.\"\n  }\n}", mail, name, mail, password)))
     		.build();
 		HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 		return response.statusCode();
