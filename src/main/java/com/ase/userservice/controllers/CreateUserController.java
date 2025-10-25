@@ -33,10 +33,11 @@ public class CreateUserController {
 		String username = newUser.email;
 		response = UserManagment.getUserDatafromUsername(username, token);
 
-		if (sendmail(newUser.email, username, newUser.credentials[0].value) == 204) {
+		int responseCode = sendmail(newUser.email, username, newUser.credentials[0].value);
+		if (responseCode == 204) {
 			System.out.println("Email sent successfully to " + newUser.email);
 		} else {
-			System.out.println("Failed to send email to " + newUser.email);
+			System.out.printf("Failed to send email to %s with %d\n", newUser.email, responseCode);
 		}
 
 		return new ResponseEntity<>(response.body(), org.springframework.http.HttpStatus.valueOf(response.statusCode()));
