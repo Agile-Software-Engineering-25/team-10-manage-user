@@ -46,7 +46,6 @@ public class GetToken {
 		} else {
 			String body = response.body();
 			String safeBody = body == null ? null : (body.length() > 1000 ? body.substring(0, 1000) + "..." : body);
-			// log.error("Keycloak token endpoint error: status={}, body={}", status, safeBody);
 			throw new TokenRefreshException(String.format("Keycloak token endpoint error: status=%s, body=%s", status, safeBody));
 		}
 	}
@@ -65,6 +64,7 @@ public class GetToken {
 	public void refreshToken() {
 		try {
 			this.token = parseJson(makehttpcall());
+			log.info("refreshed token successfully");
 		} catch (IOException | InterruptedException | TokenRefreshException e) {
 			log.error("Error during token refresh: " + e);
 		}
