@@ -20,5 +20,4 @@ public class GetTokenController {
 		String token = this.token.getToken();
 		return token;
 	}
-
 }
