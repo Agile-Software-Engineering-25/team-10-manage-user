@@ -60,7 +60,7 @@ public class GetToken {
     }
 
 
-	@Scheduled(fixedDelay = 1000)
+	@Scheduled(fixedDelay = 10000)
 	public void refreshToken() {
 		try {
 			this.token = parseJson(makehttpcall());

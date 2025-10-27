@@ -8,6 +8,7 @@ import java.net.http.HttpResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,9 +25,13 @@ public class DeleteUserController {
     private static final String bitfrostServiceName = "User-Service", bitfrostTopicName = "user:deletion";
     private final String bitfrostProjectSecret = System.getenv("BITFROST_PROJECT_SECRET");
 
+    @Autowired
+	private GetToken token;
+
+
     @DeleteMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<?> deleteUser(@PathVariable String id) throws IOException, InterruptedException {
-        String token = new GetToken().getToken();
+        String token = this.token.getToken();
         
         HttpClient client = HttpClient.newHttpClient();
 
