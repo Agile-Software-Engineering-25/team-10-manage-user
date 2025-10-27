@@ -14,14 +14,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.net.http.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
+@Component
 public class GetToken {
 	
 	private static final Logger log = LoggerFactory.getLogger(GetToken.class);
 
     private String token;
 
-	public String makehttpcall() throws IOException, InterruptedException {
+	public String makehttpcall() throws IOException, InterruptedException, TokenRefreshException {
 		HttpClient client = HttpClient.newHttpClient();
 
 		String client_id = System.getenv("KC_CLIENT_ID");
@@ -39,25 +42,33 @@ public class GetToken {
 
 		int status = response.statusCode();
 		if (status == 200) {
-			log.info("Keycloak token endpoint responded with status=200 (OK)");
+			return response.body();
 		} else {
 			String body = response.body();
 			String safeBody = body == null ? null : (body.length() > 1000 ? body.substring(0, 1000) + "..." : body);
-			log.warn("Keycloak token endpoint error: status={}, body={}", status, safeBody);
+			// log.error("Keycloak token endpoint error: status={}, body={}", status, safeBody);
+			throw new TokenRefreshException(String.format("Keycloak token endpoint error: status=%s, body=%s", status, safeBody));
 		}
-
-		return response.body();
 	}
 
 	public String parseJson(String body) throws JsonMappingException, JsonProcessingException{
 		ObjectMapper mapper = new ObjectMapper();
-		TokenResponse jsontoken = mapper.readValue(body,TokenResponse.class);
-		token = jsontoken.access_token;
-		return token;
+		return mapper.readValue(body,TokenResponse.class).access_token;
 	}
 
     public String getToken() throws JsonMappingException, JsonProcessingException, IOException, InterruptedException {
-        return parseJson(makehttpcall());
+        return this.token;
     }
 
+
+	@Scheduled(fixedDelay = 1000)
+	public void refreshToken() {
+		try {
+			this.token = parseJson(makehttpcall());
+		} catch (IOException | InterruptedException | TokenRefreshException e) {
+			log.error("Error during token refresh: " + e);
+		}
+	}
+
 }
+
