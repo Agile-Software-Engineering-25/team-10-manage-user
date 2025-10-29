@@ -37,13 +37,7 @@ public class CreateUserController {
 	@PostMapping(consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> createUser(@RequestBody NewUserRepresentation newUser) throws URISyntaxException, IOException, InterruptedException {
 
-
-		log.info("started getting token");
-		long timepre = System.currentTimeMillis();
 		String token = this.token.getToken();
-		long timepost = System.currentTimeMillis();
-
-		log.info("took " + (timepost - timepre) + " ms to get token.");
 
 		String newUserAsJson = new ObjectMapper().writeValueAsString(newUser);
 		HttpResponse<String> response = UserManagment.createUserfromJson(newUserAsJson, token);
