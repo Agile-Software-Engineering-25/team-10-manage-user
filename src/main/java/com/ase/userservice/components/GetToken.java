@@ -24,7 +24,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class GetToken {
 	
 	private static final Logger log = LoggerFactory.getLogger(GetToken.class);
-
 	private String token;
 
 	public String makehttpcall() throws IOException, InterruptedException, TokenRefreshException {
@@ -32,6 +31,11 @@ public class GetToken {
 	String client_id = System.getenv("KC_CLIENT_ID");
 	String client_secret = System.getenv("KC_CLIENT_SECRET");
 	String url = "client_id=%s&grant_type=client_credentials&client_secret=%s";
+
+	if (client_id == null | client_secret == null) {
+		log.error("client id or client secret is NULL (forgot to set env var?)");
+		System.exit(1);
+	}
 
 	HttpRequest request = HttpRequest.newBuilder()
 		.uri(URI.create("https://keycloak.sau-portal.de/realms/sau/protocol/openid-connect/token"))
