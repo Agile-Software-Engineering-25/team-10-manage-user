@@ -37,10 +37,12 @@ public class CreateUserController {
 	@PostMapping(consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> createUser(@RequestBody NewUserRepresentation newUser) throws URISyntaxException, IOException, InterruptedException {
 
+
 		String token = this.token.getToken();
 
 		String newUserAsJson = new ObjectMapper().writeValueAsString(newUser);
 		HttpResponse<String> response = UserManagment.createUserfromJson(newUserAsJson, token);
+		
 		if (response.statusCode() != 201) {
 			return new ResponseEntity<>(response.body(), org.springframework.http.HttpStatus.valueOf(response.statusCode()));
 		}
@@ -61,7 +63,7 @@ public class CreateUserController {
 	public int sendmail(String mail, String name, String password) throws IOException, InterruptedException{
 		HttpClient client = HttpClient.newHttpClient();
 
-		String token = this.token.getToken();
+		String token = new GetToken().getToken();
 
 		ObjectMapper mapper = new ObjectMapper();
 		Map<String, Object> payload = new HashMap<>();
