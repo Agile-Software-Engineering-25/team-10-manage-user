@@ -58,15 +58,15 @@ public class GetToken {
 			String safeBody = body == null ? null : (body.length() > 1000 ? body.substring(0, 1000) + "..." : body);
 			throw new TokenRefreshException(String.format("Keycloak token endpoint error: status=%s, body=%s", status, safeBody));
 		}
-		}
+	}
 
-		public String parseJson(String body) throws JsonMappingException, JsonProcessingException{
-			ObjectMapper mapper = new ObjectMapper();
-			return mapper.readValue(body,TokenResponse.class).access_token;
-		}
+	public String parseJson(String body) throws JsonMappingException, JsonProcessingException{
+		ObjectMapper mapper = new ObjectMapper();
+		return mapper.readValue(body,TokenResponse.class).access_token;
+	}
 
-		public String getToken() throws JsonMappingException, JsonProcessingException, IOException, InterruptedException {
-			return this.token;
+    public String getToken() throws JsonMappingException, JsonProcessingException, IOException, InterruptedException {
+        return this.token;
     }
 
 
