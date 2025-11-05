@@ -6,6 +6,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +24,10 @@ public class GetUserController {
 
   private final UserResponseHelper responseHelper;
 
+  @Autowired
+	private GetToken token;
+
+
   public GetUserController(UserResponseHelper responseHelper) {
     this.responseHelper = responseHelper;
   }
@@ -36,7 +41,7 @@ public class GetUserController {
       @RequestParam(value = "groupId", required = false) String groupId)
       throws JsonProcessingException, IOException, InterruptedException {
 
-    String token = new GetToken().getToken();
+    String token = this.token.getToken();
     HttpClient client = HttpClient.newHttpClient();
     HttpRequest request;
     boolean isIdSearch = false;

@@ -14,6 +14,7 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,17 +29,22 @@ import com.ase.userservice.entities.NewUserRepresentation;
 @RestController
 @RequestMapping("/user")
 public class CreateUserController {
-	private static final Logger log = LoggerFactory.getLogger(DeleteUserController.class);
+	private static final Logger log = LoggerFactory.getLogger(CreateUserController.class);
+
+	@Autowired
+	private GetToken token;
 
 	@PostMapping(consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> createUser(@RequestBody NewUserRepresentation newUser) throws URISyntaxException, IOException, InterruptedException {
-		
-		String token = new GetToken().getToken();
+
+		String token = this.token.getToken();
 
 		String newUserAsJson = new ObjectMapper().writeValueAsString(newUser);
 		HttpResponse<String> response = UserManagment.createUserfromJson(newUserAsJson, token);
-		if (response.statusCode() != 201)
+		if (response.statusCode() != 201) {
 			return new ResponseEntity<>(response.body(), org.springframework.http.HttpStatus.valueOf(response.statusCode()));
+		}
+
 		String username = newUser.email;
 		response = UserManagment.getUserDatafromUsername(username, token);
 
@@ -55,7 +61,7 @@ public class CreateUserController {
 	public int sendmail(String mail, String name, String password) throws IOException, InterruptedException{
 		HttpClient client = HttpClient.newHttpClient();
 
-		String token = new GetToken().getToken();
+		String token = this.token.getToken();
 
 		ObjectMapper mapper = new ObjectMapper();
 		Map<String, Object> payload = new HashMap<>();
