@@ -37,10 +37,12 @@ public class CreateUserController {
 	@PostMapping(consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> createUser(@RequestBody NewUserRepresentation newUser) throws URISyntaxException, IOException, InterruptedException {
 
+
 		String token = this.token.getToken();
 
 		String newUserAsJson = new ObjectMapper().writeValueAsString(newUser);
 		HttpResponse<String> response = UserManagment.createUserfromJson(newUserAsJson, token);
+
 		if (response.statusCode() != 201) {
 			return new ResponseEntity<>(response.body(), org.springframework.http.HttpStatus.valueOf(response.statusCode()));
 		}
