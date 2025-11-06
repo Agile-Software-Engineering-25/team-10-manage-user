@@ -1,4 +1,7 @@
 spring:
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: false
   application:
     name: Team-10-Manage-User
   jpa:
@@ -20,9 +23,15 @@ spring:
         jwt:
           issuer-uri: https://keycloak.sau-portal.de/realms/sau
           jwk-set-uri: https://keycloak.sau-portal.de/realms/sau/protocol/openid-connect/certs
+
+keycloak:
+  serverUrl: https://keycloak.sau-portal.de
+  realm: sau
+  clientId: ${KC_CLIENT_ID}
+  clientSecret: ${KC_CLIENT_SECRET}
 server:
   port: 8080
   servlet:
-    context-path: /userapi/v1
+    context-path: /userapi
   error:
     include-message: always

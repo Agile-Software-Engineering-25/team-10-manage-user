@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -20,9 +21,9 @@ public class SecurityConfig {
 
     // the role always has to be capatalized
     http
-        .csrf(csrf -> csrf.disable()) // Disable CSRF for API endpoints isnt needed for our purpose since we are not using cookies for auth
+        .csrf(AbstractHttpConfigurer::disable) // Disable CSRF for API endpoints isnt needed for our purpose since we are not using cookies for auth
         .authorizeHttpRequests(authorize -> authorize
-            .requestMatchers("/user", "/user/**").hasRole("MANAGE-USERS")
+            .requestMatchers("**/user", "**/user/**").hasRole("MANAGE-USERS")
             .anyRequest().authenticated())
         .oauth2ResourceServer(oauth2 -> oauth2
             .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtConverter)));

@@ -1,4 +1,4 @@
-package com.ase.userservice.controllers;
+package com.ase.userservice.controllers.v1;
 
 import java.io.IOException;
 import java.net.URI;
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ase.userservice.components.GetToken;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/v1/user")
 public class DeleteUserController {
     private static final Logger log = LoggerFactory.getLogger(DeleteUserController.class);
 
@@ -32,7 +32,7 @@ public class DeleteUserController {
     @DeleteMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<?> deleteUser(@PathVariable String id) throws IOException, InterruptedException {
         String token = this.token.getToken();
-        
+
         HttpClient client = HttpClient.newHttpClient();
 
         HttpRequest request = HttpRequest.newBuilder()
@@ -60,7 +60,7 @@ public class DeleteUserController {
                 .method("POST", HttpRequest.BodyPublishers.ofString("{\n  \"user-id\": \""+ id +"\"\n}"))
                 .build();
             HttpResponse<String> bitfrostResponse = HttpClient.newHttpClient().send(bitfrostRequest, HttpResponse.BodyHandlers.ofString());
-            
+
             int bfStatus = bitfrostResponse.statusCode();
             if (bfStatus < 200 || bfStatus >= 300) {
                 String bfBody = bitfrostResponse.body();

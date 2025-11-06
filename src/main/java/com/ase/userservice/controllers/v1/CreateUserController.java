@@ -1,4 +1,4 @@
-package com.ase.userservice.controllers;
+package com.ase.userservice.controllers.v1;
 
 import java.io.IOException;
 import java.net.URI;
@@ -27,7 +27,7 @@ import com.ase.userservice.components.UserManagment;
 import com.ase.userservice.entities.NewUserRepresentation;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/v1/user")
 public class CreateUserController {
 	private static final Logger log = LoggerFactory.getLogger(CreateUserController.class);
 
