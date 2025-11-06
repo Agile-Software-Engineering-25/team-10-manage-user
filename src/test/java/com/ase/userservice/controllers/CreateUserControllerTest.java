@@ -12,6 +12,7 @@ import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import com.ase.userservice.controllers.v1.CreateUserController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
@@ -73,22 +74,22 @@ class CreateUserControllerTest {
         NewUserRepresentation testUser = createTestUser();
         String testToken = "test-token-123";
         String userDataResponse = "[{\"id\":\"user-id-123\",\"username\":\"testuser\"}]";
-        
+
         // Mock GetToken
         when(getToken.getToken()).thenReturn(testToken);
-        
+
         // Mock UserManagement static methods
         try (MockedStatic<UserManagment> mockedUserManagement = mockStatic(UserManagment.class)) {
             // Mock successful user creation (201 status)
             HttpResponse<String> createResponse = createMockHttpResponse(201, "");
             mockedUserManagement.when(() -> UserManagment.createUserfromJson(anyString(), anyString()))
                     .thenReturn(createResponse);
-            
+
             // Mock successful user data retrieval
             HttpResponse<String> getUserResponse = createMockHttpResponse(200, userDataResponse);
             mockedUserManagement.when(() -> UserManagment.getUserDatafromUsername(anyString(), anyString()))
                     .thenReturn(getUserResponse);
-            
+
             // When & Then
             mockMvc.perform(post("/user")
                     .contentType(MediaType.APPLICATION_JSON)
@@ -104,17 +105,17 @@ class CreateUserControllerTest {
         NewUserRepresentation testUser = createTestUser();
         String testToken = "test-token-123";
         String errorResponse = "User creation failed";
-        
+
         // Mock GetToken
         when(getToken.getToken()).thenReturn(testToken);
-        
+
         // Mock UserManagement static methods
         try (MockedStatic<UserManagment> mockedUserManagement = mockStatic(UserManagment.class)) {
             // Mock failed user creation (400 status)
             HttpResponse<String> createResponse = createMockHttpResponse(400, errorResponse);
             mockedUserManagement.when(() -> UserManagment.createUserfromJson(anyString(), anyString()))
                     .thenReturn(createResponse);
-            
+
             // When & Then
             mockMvc.perform(post("/user")
                     .contentType(MediaType.APPLICATION_JSON)
@@ -128,10 +129,10 @@ class CreateUserControllerTest {
     void testCreateUser_TokenRetrievalFailed() throws Exception {
         // Given
         NewUserRepresentation testUser = createTestUser();
-        
+
         // Mock GetToken to throw exception
         when(getToken.getToken()).thenThrow(new RuntimeException("Token retrieval failed"));
-        
+
         // When & Then
         mockMvc.perform(post("/user")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -145,22 +146,22 @@ class CreateUserControllerTest {
         NewUserRepresentation testUser = createTestUser();
         String testToken = "test-token-123";
         String errorResponse = "User not found";
-        
+
         // Mock GetToken
         when(getToken.getToken()).thenReturn(testToken);
-        
+
         // Mock UserManagement static methods
         try (MockedStatic<UserManagment> mockedUserManagement = mockStatic(UserManagment.class)) {
             // Mock successful user creation (201 status)
             HttpResponse<String> createResponse = createMockHttpResponse(201, "");
             mockedUserManagement.when(() -> UserManagment.createUserfromJson(anyString(), anyString()))
                     .thenReturn(createResponse);
-            
+
             // Mock failed user data retrieval (404 status)
             HttpResponse<String> getUserResponse = createMockHttpResponse(404, errorResponse);
             mockedUserManagement.when(() -> UserManagment.getUserDatafromUsername(anyString(), anyString()))
                     .thenReturn(getUserResponse);
-            
+
             // When & Then
             mockMvc.perform(post("/user")
                     .contentType(MediaType.APPLICATION_JSON)

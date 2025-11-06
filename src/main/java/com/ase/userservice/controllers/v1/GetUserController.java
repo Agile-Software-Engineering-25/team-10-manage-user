@@ -1,4 +1,4 @@
-package com.ase.userservice.controllers;
+package com.ase.userservice.controllers.v1;
 
 import java.io.IOException;
 import java.net.URI;
@@ -6,6 +6,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,8 +19,9 @@ import com.ase.userservice.components.UserResponseHelper;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
+@Slf4j
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/v1/user")
 public class GetUserController {
 
   private final UserResponseHelper responseHelper;
@@ -117,4 +119,6 @@ public class GetUserController {
 
     return ResponseEntity.status(response.statusCode()).body(extractedResponse);
   }
+
+
 }
