@@ -23,7 +23,7 @@ public class SecurityConfig {
     http
         .csrf(AbstractHttpConfigurer::disable) // Disable CSRF for API endpoints isnt needed for our purpose since we are not using cookies for auth
         .authorizeHttpRequests(authorize -> authorize
-            .requestMatchers("v1/user", "v2/user").hasRole("MANAGE-USERS")
+            .requestMatchers("v1/user").hasRole("MANAGE-USERS")
             .anyRequest().authenticated())
         .oauth2ResourceServer(oauth2 -> oauth2
             .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtConverter)));
